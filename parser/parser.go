@@ -163,6 +163,7 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	return stmt
 }
 
+// <expression>;
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	// defer untrace(trace("parseExpressionStatement"))
 	stmt := &ast.ExpressionStatement{Token: p.curToken}
@@ -181,6 +182,7 @@ func (p *Parser) noPrefixParseFnError(t token.TokenType) {
 	p.errors = append(p.errors, msg)
 }
 
+// <expression>
 func (p *Parser) parseExpression(precedence int) ast.Expression {
 	// defer untrace(trace("parseExpression"))
 	prefix := p.prefixParseFns[p.curToken.Type]
@@ -244,6 +246,7 @@ func (p *Parser) parseBoolean() ast.Expression {
 	return &ast.Boolean{Token: p.curToken, Value: p.curTokenIs(token.TRUE)}
 }
 
+// (<expression>)
 func (p *Parser) parseGroupedExpression() ast.Expression {
 	p.nextToken()
 
@@ -309,7 +312,7 @@ func (p *Parser) parseFunctionLiteral() ast.Expression {
 	return lit
 }
 
-// (<parameter one>, <parameter two>, <parameter three>, ...)
+// (<parameter>, <parameter>, <parameter>, ...)
 func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 	identifiers := []*ast.Identifier{}
 
@@ -337,6 +340,7 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 	return identifiers
 }
 
+// { <statement> <statement> ... }
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	block := &ast.BlockStatement{Token: p.curToken}
 	block.Statements = []ast.Statement{}
@@ -392,6 +396,7 @@ func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
 	return exp
 }
 
+// <expression>, <expression>, ...
 func (p *Parser) parseCallArguments() []ast.Expression {
 	args := []ast.Expression{}
 
